@@ -48,6 +48,8 @@ jobs:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
       run: |
           kubectl set image deployment/fraud-deployment eks-fraud-det=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: update kube config
+      run: aws eks update-kubeconfig --name eks-fraud-det --region ap-south-1
     - name: Wait for rollout to finish
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
