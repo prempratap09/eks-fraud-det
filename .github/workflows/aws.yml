@@ -42,5 +42,5 @@ jobs:
       
     - name: Deploy image to Amazon EKS
       run: |
-        kubectl apply -f eks/fraud.yaml
-        kubectl apply -f eks/service.yaml
+        kubectl apply -f deployment-fraud/fraud.yaml
+        kubectl apply -f deployment-fraud/service.yaml
