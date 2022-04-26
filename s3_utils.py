@@ -1,14 +1,15 @@
 import io
 import boto3
 import pandas as pd
+import os
 
 from s3_credentials import S3_CREDS
 
 s3 = boto3.client(
     "s3",
-    aws_access_key_id=S3_CREDS["accessKeyId"],
-    aws_secret_access_key=S3_CREDS["secretAccessKey"],
-    region_name=S3_CREDS["region"],
+    aws_access_key_id= os.environ[ 'AWS_ACCESS_KEY_ID' ], #S3_CREDS["accessKeyId"],
+    aws_secret_access_key=os.environ[ 'AWS_SECRET_ACCESS_KEY' ], #S3_CREDS["secretAccessKey"],
+    region_name=os.environ['region_name'],
 )
 
 
