@@ -43,7 +43,7 @@ jobs:
         
     - name: Deploy to Kubernetes cluster
       run: |
-        kubectl set image deployment/fraud-deployment eks-fraud-det=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        kubectl set image deployment/fraud-deployment fraud-deployment-web=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     - name: Wait for rollout to finish
       run: |
         kubectl rollout status deployment/fraud-deployment
