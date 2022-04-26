@@ -43,16 +43,14 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
-    - name: Deploy to Kubernetes cluster
-      uses: prempratap09/eks-fraud-det@master
-      env:
-        KUBE_CONFIG_DATA:  ${{ secrets.KUBE_CONFIG_DATA }}
-      with:
-         args: set image deployment/fraud-deployment=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    - name: verify deployment
-      uses: prempratap09/eks-fraud-det@master
+    - name: Update Deployment image
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      with:
-        args: rollout status deployment/fraud-deployment
+      run: |
+          kubectl set image deployment/fraud-deployment fraud-deployment-web==$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: Wait for rollout to finish
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      run: |
+          kubectl rollout status deployment/fraud-deployment
        
