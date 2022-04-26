@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-deployment
+  labels:
+    app: fraud-dec
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fraud-dec
+  template:
+    metadata:
+      labels:
+        app: fraud-dec
+    spec:
+      containers:
+      - name: fraud-dec
+        image: 164311333392.dkr.ecr.ap-south-1.amazonaws.com/eks-fraud-det:1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+
+
