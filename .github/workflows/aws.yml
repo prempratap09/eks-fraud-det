@@ -33,26 +33,9 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: eks-fraud-det
-        IMAGE_TAG: 1.0
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        echo "Pushing image to ECR..."
-        echo $ECR_REGISTRY
-        echo $ECR_REPOSITORY
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        
-    - name: Update Deployment image
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      run: |
-          kubectl set image deployment/fraud-deployment eks-fraud-det=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    - name: update kube config
-      run: aws eks update-kubeconfig --name eks-fraud-det --region ap-south-1
-    - name: Wait for rollout to finish
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      run: |
-          kubectl rollout status deployment/fraud-deployment
-       
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name fraud-dection --region ap-south-1       
