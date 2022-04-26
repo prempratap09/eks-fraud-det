@@ -38,12 +38,21 @@ jobs:
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         echo "Pushing image to ECR..."
+        echo $ECR_REGISTRY
+        echo $ECR_REPOSITORY
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
     - name: Deploy to Kubernetes cluster
-      run: |
-        kubectl set image deployment/fraud-deployment fraud-det-web=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    - name: Wait for rollout to finish
-      run: |
-        kubectl rollout status deployment/fraud-deployment
+      uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
+      with:
+         args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: verify deployment
+      uses: kodermax/kubectl-aws-eks@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      with:
+        args: rollout status deployment/fraud-deployment
+       
