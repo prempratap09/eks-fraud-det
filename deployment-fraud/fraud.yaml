@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: fraud-dec
-        image: 164311333392.dkr.ecr.ap-south-1.amazonaws.com/eks-fraud-det:1
-        imagePullPolicy: always
+        image: 164311333392.dkr.ecr.ap-south-1.amazonaws.com/eks-fraud-det:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
 
