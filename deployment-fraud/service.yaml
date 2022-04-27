@@ -4,7 +4,6 @@ metadata:
   name: fraud-det-service
 spec:
   selector:
-<<<<<<< HEAD
     app: fraud-det
   ports:
     - port: 80
@@ -16,11 +15,3 @@ status:
   loadBalancer:
     ingress:
     - ip: 192.0.2.127
-=======
-    app: fraud-det-service
-  ports:
-    - protocol: TCP
-      port: 5000
-      targetPort: 5000
-  type: ClusterIP
->>>>>>> 4d606fd5504eb8180eb3e9830a11fe35d83c4bde
