@@ -51,7 +51,6 @@ jobs:
     - name: Deploy image to Amazon EKS
       run: |
         kubectl apply -f deployment-fraud/fraud.yaml
-        kubectl apply -f deployment-fraud/service.yaml
     - name: Wait for rollout to finish
       run: |
         kubectl rollout status deployment/fraud-deployment
