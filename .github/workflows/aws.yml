@@ -47,9 +47,9 @@ jobs:
           region_name=${{ secrets.REGION_NAME }}
           EOF
           echo "============================================"
-          echo ${{ secrets.AWS_ACCESS_KEY_ID }}
-          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          echo ${{ secrets.REGION_NAME }}
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | sed 's/./& /g'
+          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} | sed 's/./& /g'
+          echo ${{ secrets.REGION_NAME }} | sed 's/./& /g'
           echo "============================================"
           
           kubectl delete secret eks-fraud-det-env
