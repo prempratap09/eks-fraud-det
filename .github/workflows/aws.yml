@@ -32,18 +32,26 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-        IMAGE_TAG: 1.0
+        ECR_REPOSITORY: eks-fraud-det
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        
-    - name: Deploy to Kubernetes cluster
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name fraud-dection --region ap-south-1      
+    - name: Update deployment secrets
       run: |
-        kubectl set image deployment/fraud-deployment fraud-det-web=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          cat << EOF >> /tmp/.env
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region_name=${{ secrets.region_name }}
+          EOF
+          kubectl delete secret eks-fraud-det-env
+          kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
+    - name: Deploy image to Amazon EKS
+      run: |
+        kubectl apply -f deployment-fraud/fraud.yaml
+        kubectl apply -f deployment-fraud/service.yaml
     - name: Wait for rollout to finish
       run: |
         kubectl rollout status deployment/fraud-deployment
