@@ -50,6 +50,9 @@ jobs:
           kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
     - name: Deploy image to Amazon EKS
       run: |
+        echo "=================================="
+        echo $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "=================================="
         kubectl set image deployment/fraud-deployment fraud-dec=$ECR_REGISTRY/$ECR_REPOSITORY:latest
     - name: Wait for rollout to finish
       run: |
