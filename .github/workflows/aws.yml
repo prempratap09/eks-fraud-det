@@ -44,8 +44,14 @@ jobs:
           cat << EOF >> /tmp/.env
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region_name=${{ secrets.region_name }}
+          region_name=${{ secrets.REGION_NAME }}
           EOF
+          echo "============================================"
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }}
+          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          echo ${{ secrets.REGION_NAME }}
+          echo "============================================"
+          
           kubectl delete secret eks-fraud-det-env
           kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
 #     - name: Delete Deployment on EKS
