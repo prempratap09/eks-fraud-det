@@ -4,7 +4,6 @@ import pandas as pd
 import os
 
 
-#from s3_credentials import S3_CREDS
 
 s3 = boto3.client(
     "s3",
