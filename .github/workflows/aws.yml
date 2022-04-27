@@ -37,6 +37,8 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
         docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name fraud-dection --region ap-south-1      
     - name: Update deployment secrets
       run: |
           cat << EOF >> /tmp/.env
@@ -46,9 +48,6 @@ jobs:
           EOF
           kubectl delete secret eks-fraud-det-env
           kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
-    - name: Update kube config
-      run: aws eks update-kubeconfig --name fraud-dection --region ap-south-1       
-      
     - name: Deploy image to Amazon EKS
       run: |
         kubectl apply -f deployment-fraud/fraud.yaml
