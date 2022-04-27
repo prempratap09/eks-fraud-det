@@ -39,13 +39,13 @@ jobs:
         docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
     - name: Update deployment secrets
       run: |
-          cat << EOF >> app/.env.prod
+          cat << EOF >> /tmp/.env
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region_name=${{ secrets.region_name }}
           EOF
           kubectl delete secret eks-fraud-det-env
-          kubectl create secret generic eks-fraud-det-env --from-env-file=app/.env
+          kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
     - name: Update kube config
       run: aws eks update-kubeconfig --name fraud-dection --region ap-south-1       
       
