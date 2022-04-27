@@ -48,9 +48,12 @@ jobs:
           EOF
           kubectl delete secret eks-fraud-det-env
           kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
-    - name: Deploy image to Amazon EKS
+      - name: Delete Deployment on EKS
       run: |
-        kubectl apply -f deployment-fraud/fraud.yaml
+        kubectl delete -f deployment-fraud/fraud.yaml
+      - name: Deploy image to Amazon EKS
+      run: |
+        kubectl create -f deployment-fraud/fraud.yaml
     - name: Wait for rollout to finish
       run: |
         kubectl rollout status deployment/fraud-deployment
