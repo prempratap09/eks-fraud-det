@@ -18,6 +18,9 @@ spec:
       - name: fraud-dec
         image: 164311333392.dkr.ecr.ap-south-1.amazonaws.com/eks-fraud-det:latest
         imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: eks-fraud-det-env
         ports:
         - containerPort: 5000
 
