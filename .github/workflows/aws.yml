@@ -46,7 +46,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           region_name=${{ secrets.region_name }}
           EOF
-          kubectl delete secret eks-fraud-det-env
           kubectl create secret generic eks-fraud-det-env --from-env-file=/tmp/.env
     - name: Deploy image to Amazon EKS
       run: |
